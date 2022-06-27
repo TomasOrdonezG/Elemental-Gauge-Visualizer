@@ -20,6 +20,10 @@ pygame.display.set_icon(pygame_icon)
 #elements colours
 elementC = [(163, 243, 202), (250, 182, 50), (175, 142, 193), (165, 200, 59), (76, 194, 241), (239, 121, 56), (159, 214, 227)]
 
+# Assign FPS a value
+FPS = 60
+FramePerSec = pygame.time.Clock()
+
 #Elements images (0 anemo 1 geo 2 electro 3 dendro 4 hydro 5 pyro 6 cryo)
 elementW, elementH = 65, 65
 elimgs = []
@@ -98,17 +102,17 @@ class Aura:
     def decay(self):
         if self.aura:
             if self.decayU == 'A':
-                self.U -= 1 / (11.875 * FPSDisplay.trueFPS)
+                self.U -= 1 / (11.875 * FPS)
             if self.decayU == 'B':
-                self.U -= 1 / (7.5 * FPSDisplay.trueFPS)
+                self.U -= 1 / (7.5 * FPS)
             if self.decayU == 'C':
-                self.U -= 1 / (5.3125 * FPSDisplay.trueFPS)
+                self.U -= 1 / (5.3125 * FPS)
             if self.decayU == 'AB':
-                self.U -= (1 / (11.875 * FPSDisplay.trueFPS)) + (1 / (7.5 * FPSDisplay.trueFPS))
+                self.U -= (1 / (11.875 * FPS)) + (1 / (7.5 * FPS))
             if self.decayU == 'BB':
-                self.U -= (1 / (7.5 * FPSDisplay.trueFPS)) + (1 / (7.5 * FPSDisplay.trueFPS))
+                self.U -= (1 / (7.5 * FPS)) + (1 / (7.5 * FPS))
             if self.decayU == 'CB':
-                self.U -= (1 / (5.3125 * FPSDisplay.trueFPS)) + (1 / (7.5 * FPSDisplay.trueFPS))
+                self.U -= (1 / (5.3125 * FPS)) + (1 / (7.5 * FPS))
         
         #remove aura when decay is complete
         if self.U <= 0:
@@ -127,19 +131,13 @@ class Aura:
 
     def dendroDecay(self):
         global burning
-        if self.elementNum == 3:
-            initialDecayU = self.decayU
-            if burning:
-                if self.decayU == 'A':
-                    self.decayU = 'AB'
-                if self.decayU == 'B':
-                    self.decayU = 'BB'
-                if self.decayU == 'C':
-                   self.decayU = 'CB'
-            else:
-                #print(initialDecayU)
-                self.decayU = initialDecayU
-
+        if self.elementNum == 3 and burning:
+            if self.decayU == 'A':
+                self.decayU = 'AB'
+            if self.decayU == 'B':
+                self.decayU = 'BB'
+            if self.decayU == 'C':
+                self.decayU = 'CB'
 
 def reaction(mouseX, mouseY):
     w, h = elementW, elementH
@@ -399,7 +397,7 @@ def doubleAura(aura1, aura2):
 def e_charged(): #electro charged ticks
     global frameEC, EC
     if EC:
-        if frameEC == (5 * round(FPSDisplay.trueFPS / 5)) and len(auraList) >= 2:
+        if frameEC == FPS and len(auraList) >= 2:
             frameEC = 0
             auraList[-1].U -= 0.4
             auraList[-2].U -= 0.4
@@ -407,7 +405,7 @@ def e_charged(): #electro charged ticks
 
         if auraList[-1].U <= 0 or auraList[-2].U <= 0:
             EC = False
-            frameEC = (5 * round(FPSDisplay.trueFPS / 5)) + 1
+            frameEC = FPS + 1
 
 def burningReaction(): #burning ticks
     global frameBurning, burning
@@ -416,13 +414,12 @@ def burningReaction(): #burning ticks
             frameBurning = 0
             reactionTextList.insert(0, reactionText('Burning'))
 
-            #reapply 2B pyro every tick (-1,2 top, -2,1 bottom)
-            if auraList[-2].elementNum == 3:
-                if auraList[-1].U <= 2 * Aura.tax and auraList[-1].elementNum == 5:
-                    auraList[-1] = Aura(True, 2, 'B', 5, 2)
-            elif auraList[-1].elementNum == 3:
-                if auraList[-2].U <= 2 * Aura.tax and auraList[-2].elementNum == 5:
-                    auraList[-2] = Aura(True, 2, 'B', 5, 1)
+            #reapply 2B pyro every tick
+            if auraList[-1].U <= 2 * Aura.tax and auraList[-1].elementNum == 5:
+                auraList[-1] = Aura(True, 2, 'B', 5, 2)
+
+            if auraList[-2].U <= 2 * Aura.tax and auraList[-2].elementNum == 5:
+                auraList[-2] = Aura(True, 2, 'B', 5, 1)
 
         if auraList[-1].U <= 0 or auraList[-2].U <= 0:
             burning = False
@@ -546,21 +543,8 @@ frameEC = 0
 frameBurning = 0
 EC = False
 burning = False
-
-class FPSDisplay:
-    trueFPS = 0
-
-    def __init__(self):
-        self.clock = pygame.time.Clock()
-
-    def render(self):
-        FPSDisplay.trueFPS = self.clock.get_fps()
-
-# Assign FPS a value
-FPS = 60
-fps = FPSDisplay()
-
 while running:
+
     frameEC += 1
     frameBurning += 1
     #BG Colour keep at top
@@ -592,7 +576,13 @@ while running:
     newReactionTextList = [reactionTextList[i] for i in range(len(reactionTextList)) if i <= 12]
     reactionTextList = newReactionTextList
 
+    print(str(len(auraList)) + ', ' + 
+    str(len(reactionTextList)) + ', ' + 
+    str(len(elimgs)) + ', ' + 
+    str(len(elementC)) + ', ' + 
+    str(len(newAuraList)) + ', ' + 
+    str(len(newReactionTextList)))
+
     #Update display
-    fps.render()
     pygame.display.update()
-    fps.clock.tick(FPS)
+    FramePerSec.tick(FPS)
