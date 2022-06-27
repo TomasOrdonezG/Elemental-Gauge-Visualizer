@@ -413,10 +413,11 @@ def burningReaction(): #burning ticks
             reactionTextList.insert(0, reactionText('Burning'))
 
             #reapply 2B pyro every tick
-            if auraList[-2].elementNum == 5:
-                auraList[-2] = Aura(True, 2, 'B', 5, 1)
-            elif auraList[-1].elementNum == 5:
+            if auraList[-1].U <= 2 * Aura.tax and auraList[-1].elementNum == 5:
                 auraList[-1] = Aura(True, 2, 'B', 5, 2)
+
+            if auraList[-2].U <= 2 * Aura.tax and auraList[-2].elementNum == 5:
+                auraList[-2] = Aura(True, 2, 'B', 5, 1)
 
         if auraList[-1].U <= 0 or auraList[-2].U <= 0:
             burning = False
