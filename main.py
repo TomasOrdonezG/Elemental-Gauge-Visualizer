@@ -213,6 +213,10 @@ def electroTrigger():
             rxnMod(superconductModifier, slot)
             reactionTextList.insert(0, reactionText('Superconduct'))
 
+        #Intensified
+        if auraList[slot].elementNum == 3:
+            reactionTextList.insert(0, reactionText('Intensified'))
+
     #Electro-charged
     if auraList[-1].elementNum == 4:
         doubleAura(auraList[-1], 2)
@@ -262,6 +266,10 @@ def hydroTrigger():
             rxnMod(forwardAmpModifier, slot)
             reactionTextList.insert(0, reactionText('Fwd. Vaporize'))
 
+        #Overgrown
+        if auraList[slot].elementNum == 3:
+            reactionTextList.insert(0, reactionText('Overgrown'))
+
     #Electro-charged
     if auraList[-1].elementNum == 2:
         doubleAura(auraList[-1], 4)
@@ -293,6 +301,20 @@ def pyroTrigger():
         if auraList[slot].elementNum == 2:
             rxnMod(overloadModifier, slot)
             reactionTextList.insert(0, reactionText('Overload'))
+
+    global burning, frameBurning
+    #Burning
+    if auraList[-1].elementNum == 3:
+        doubleAura(auraList[-1], 5)
+        reactionTextList.insert(0, reactionText('Burning'))
+        frameBurning = 0
+        burning = True
+    #Burning
+    elif auraList[-2].elementNum == 3:
+        doubleAura(auraList[-2], 5)
+        reactionTextList.insert(0, reactionText('Burning'))
+        frameBurning = 0
+        burning = True
 
 
     #Burning
