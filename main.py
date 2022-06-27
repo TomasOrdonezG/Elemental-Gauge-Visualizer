@@ -186,6 +186,7 @@ superconductModifier = 1
 overloadModifier = 1
 swirlModifier = 0.5
 crystalizeModifier = 0.5
+electroChargedModifier = -0.4
 
 def anemoTrigger(slot):
     #Swirl
@@ -221,6 +222,8 @@ def electroTrigger():
     if auraList[-1].elementNum == 4:
         doubleAura(auraList[-1], 2)
         reactionTextList.insert(0, reactionText('E-Charged'))
+        auraList[-1].U -= 0.4
+        auraList[-2].U -= 0.4
         frameEC = 0
         EC = True
 
@@ -228,6 +231,8 @@ def electroTrigger():
     elif auraList[-2].elementNum == 4:
         doubleAura(auraList[-2], 2)
         reactionTextList.insert(0, reactionText('E-Charged'))
+        auraList[-1].U -= 0.4
+        auraList[-2].U -= 0.4
         frameEC = 0
         EC = True
 
@@ -274,6 +279,8 @@ def hydroTrigger():
     if auraList[-1].elementNum == 2:
         doubleAura(auraList[-1], 4)
         reactionTextList.insert(0, reactionText('E-Charged'))
+        auraList[-1].U -= 0.4
+        auraList[-2].U -= 0.4
         frameEC = 0
         EC = True
 
@@ -281,6 +288,8 @@ def hydroTrigger():
     elif auraList[-2].elementNum == 2:
         doubleAura(auraList[-2], 4)
         reactionTextList.insert(0, reactionText('E-Charged'))
+        auraList[-1].U -= 0.4
+        auraList[-2].U -= 0.4
         frameEC = 0
         EC = True
 
@@ -403,6 +412,7 @@ def burningReaction(): #burning ticks
             frameBurning = 0
             reactionTextList.insert(0, reactionText('Burning'))
 
+            #reapply 2B pyro every tick
             if auraList[-2].elementNum == 5:
                 auraList[-2] = Aura(True, 2, 'B', 5, 1)
             elif auraList[-1].elementNum == 5:
