@@ -13,7 +13,9 @@ reactionTextList = []
 
 #create screen/canvas
 canvas = pygame.display.set_mode((cnvW, cnvH))
-pygame.display.set_caption("Title")
+pygame.display.set_caption("Gauge Visualizer")
+pygame_icon = pygame.image.load('img/icon.png')
+pygame.display.set_icon(pygame_icon)
 
 #elements colours
 elementC = [(163, 243, 202), (250, 182, 50), (175, 142, 193), (165, 200, 59), (76, 194, 241), (239, 121, 56), (159, 214, 227)]
